@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <title>Championnat ExperienceFoot - L1 / L2 / National / N2 / N3 + LDC</title>
+  <title>LE CHAMPIONNAT DES ABONNÉS - L1 / L2 / National / N2 / N3 + LDC</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     * { box-sizing: border-box; }
@@ -41,8 +41,9 @@
     }
     header .right {
       display: flex;
-      align-items: center;
-      gap: 10px;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 6px;
       font-size: 11px;
       opacity: 0.9;
       text-align: right;
@@ -57,7 +58,7 @@
       flex-wrap: wrap;
       gap: 10px 18px;
       align-items: center;
-      margin-bottom: 16px;
+      margin-bottom: 8px;
       font-size: 13px;
     }
     .toolbar label { margin-right: 4px; }
@@ -104,6 +105,7 @@
       font-size: 11px;
       opacity: 0.8;
     }
+
     .panels {
       display: grid;
       grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
@@ -115,7 +117,7 @@
         flex-direction: column;
         align-items: flex-start;
       }
-      header .right { text-align: left; }
+      header .right { text-align: left; align-items: flex-start; }
       .panels { grid-template-columns: 1fr; }
     }
     .card {
@@ -187,7 +189,6 @@
       font-size: 13px;
     }
 
-    /* ➜ wrapper pour aligner parfaitement les scores */
     .score-cell {
       display: inline-flex;
       align-items: center;
@@ -308,7 +309,7 @@
     .clickable-team:hover { text-decoration: underline; }
 
     /* Themes */
-    body.theme-ligue1 { /* style par défaut déjà appliqué */ }
+    body.theme-ligue1 { }
     body.theme-ldc {
       background: radial-gradient(circle at top, #1d245a 0, #020617 40%, #000 100%);
       color: #e5e7ff;
@@ -361,7 +362,29 @@
     body.theme-default .standings-table tr.promotion { background: #064e3b; }
     body.theme-default .standings-table tr.relegation { background: #450a0a; }
 
-    /* LDC countries */
+    /* Soir de Hype */
+    body.theme-hype {
+      background: radial-gradient(circle at top, #4c1d95 0, #111827 45%, #020617 100%);
+      color: #e5e7ff;
+    }
+    body.theme-hype header {
+      background: linear-gradient(90deg, #581c87, #b91c1c);
+      border-bottom-color: #4c1d95;
+    }
+    body.theme-hype .card {
+      background: rgba(15,23,42,0.94);
+      border-color: #f97316;
+      box-shadow: 0 0 30px rgba(248,250,252,0.18);
+    }
+    body.theme-hype th {
+      background: #020617;
+      color: #fed7aa;
+    }
+    body.theme-hype .hint {
+      color: #facc15;
+    }
+
+    /* Couleurs par pays pour les noms de club LDC */
     .country-fr { color: #60a5fa; }
     .country-es { color: #f97373; }
     .country-it { color: #4ade80; }
@@ -369,20 +392,22 @@
     .country-de { color: #facc15; }
     .country-pt { color: #c084fc; }
     .country-nl { color: #fb923c; }
-    .country-tr { color: #b91c1c; }
+    .country-tr { color: #fca5a5; }
     .country-other { color: #e5e7eb; }
+
     .flag {
       margin-right: 4px;
-      font-size: 13px;
+      font-size: 15px;
     }
   </style>
 </head>
 
 <body class="theme-ligue1">
 <header>
-  <h1 id="appTitle">📺 Championnat ExperienceFoot – Saison S1 <span>L1 • L2 • Nat • N2 • N3 • LDC</span></h1>
+  <h1 id="appTitle">🔥 LE CHAMPIONNAT DES ABONNÉS – S1 <span>L1 • L2 • Nat • N2 • N3 • LDC</span></h1>
   <div class="right">
     <span>Sauvegarde locale automatique + export JSON</span>
+    <span style="color:#facc15;font-weight:bold;">🚂 Train de la Hype = chaque SUB compte x2 🟡</span>
   </div>
 </header>
 
@@ -402,6 +427,7 @@
         <option value="ligue1">Ligue 1</option>
         <option value="default">Standard</option>
         <option value="ldc">Ligue des Champions</option>
+        <option value="hype">Soir de Hype</option>
       </select>
     </div>
     <button id="exportBtn" class="primary">
@@ -411,10 +437,13 @@
       📥 Importer une sauvegarde
     </button>
     <button id="seasonEndBtn" class="outline">
-      ⏹️ Clôturer la saison (montées / descentes / LDC / palmarès)
+      ⏹️ Clôturer la saison
+    </button>
+    <button id="randomGoalBtn" class="outline">
+      🎲 But aléatoire global
     </button>
     <button id="resetBtn" class="danger">
-      🧹 Réinitialiser tout
+      🧹 Reset complet
     </button>
     <span class="hint">
       L1: 4 LDC / 3 desc. · L2: 3 montent / 3 desc. · Nat: 3 montent / 2 desc. · N2: 2 montent / 2 desc. · N3: 2 montent.
@@ -534,7 +563,7 @@ const CLUB_COUNTRY = {
   "Galatasaray": "tr"
 };
 
-const STORAGE_KEY = "championnats_state_v11_nat2_nat3";
+const STORAGE_KEY = "championnats_state_v13_no_supporters";
 
 // ---------- Etat ----------
 let state = loadState();
@@ -784,6 +813,7 @@ const importBtn = document.getElementById("importBtn");
 const importFile = document.getElementById("importFile");
 const seasonEndBtn = document.getElementById("seasonEndBtn");
 const resetBtn = document.getElementById("resetBtn");
+const randomGoalBtn = document.getElementById("randomGoalBtn");
 const appTitle = document.getElementById("appTitle");
 const fixturesTitle = document.getElementById("fixturesTitle");
 const standingsTitle = document.getElementById("standingsTitle");
@@ -791,9 +821,10 @@ const standingsTitle = document.getElementById("standingsTitle");
 // ---------- Skins ----------
 function applySkin(skin) {
   const body = document.body;
-  body.classList.remove("theme-ligue1", "theme-ldc", "theme-default");
+  body.classList.remove("theme-ligue1", "theme-ldc", "theme-default", "theme-hype");
   if (skin === "ligue1") body.classList.add("theme-ligue1");
   else if (skin === "ldc") body.classList.add("theme-ldc");
+  else if (skin === "hype") body.classList.add("theme-hype");
   else body.classList.add("theme-default");
   currentSkin = skin;
   saveState();
@@ -809,7 +840,7 @@ function updateTitles() {
   const leagueId = leagueSelect.value || "ligue1";
   const roundIndex = parseInt(roundSelect.value || "0", 10);
   const leagueName = getLeagueLabel(leagueId);
-  appTitle.innerHTML = `📺 Championnat ExperienceFoot – Saison S${currentSeason} <span>L1 • L2 • Nat • N2 • N3 • LDC</span>`;
+  appTitle.innerHTML = `🔥 LE CHAMPIONNAT DES ABONNÉS – S${currentSeason} <span>L1 • L2 • Nat • N2 • N3 • LDC</span>`;
   fixturesTitle.innerHTML = `🗓️ Matchs – ${leagueName} (J${roundIndex + 1}) <span>Scores + anecdotes</span>`;
 
   let extra = "";
@@ -818,7 +849,6 @@ function updateTitles() {
   else if (leagueId === "national") extra = "Top 3 = montée, 2 derniers descendent";
   else if (leagueId === "national2") extra = "Top 2 = montée, 2 derniers descendent";
   else if (leagueId === "national3") extra = "Top 2 = montée";
-  else extra = "";
   standingsTitle.innerHTML = `🏆 Classement – ${leagueName} <span>${extra}</span>`;
 }
 
@@ -1076,7 +1106,6 @@ function renderFixtures() {
     homeInput.onchange = onChange;
     awayInput.onchange = onChange;
 
-    // ➜ wrapper pour un alignement parfait du score
     const scoreWrapper = document.createElement("div");
     scoreWrapper.className = "score-cell";
     scoreWrapper.appendChild(homeInput);
@@ -1166,16 +1195,23 @@ function renderPalmares() {
       .sort((a,b)=>a.season-b.season)
       .forEach(entry => {
         const li = document.createElement("li");
+
         const country = getClubCountryCode(entry.winner);
         const flagSpan = document.createElement("span");
         flagSpan.className = "flag";
         flagSpan.textContent = getCountryFlag(country);
-        const span = document.createElement("span");
-        span.textContent = entry.winner;
-        span.classList.add("country-" + country);
-        li.textContent = "S" + entry.season + " – ";
+
+        const nameSpan = document.createElement("span");
+        nameSpan.textContent = entry.winner;
+        nameSpan.classList.add("country-" + (country || "other"));
+
+        const seasonSpan = document.createElement("span");
+        seasonSpan.textContent = "S" + entry.season + " – ";
+        seasonSpan.style.marginRight = "4px";
+
+        li.appendChild(seasonSpan);
         li.appendChild(flagSpan);
-        li.appendChild(span);
+        li.appendChild(nameSpan);
         ul.appendChild(li);
       });
     right.appendChild(ul);
@@ -1390,7 +1426,7 @@ function renderLdc() {
       homeFlag.textContent = getCountryFlag(homeCountry);
       const homeText = document.createElement("span");
       homeText.textContent = m.home;
-      homeText.classList.add("country-" + homeCountry);
+      homeText.classList.add("country-" + (homeCountry || "other"));
       homeSpan.appendChild(homeFlag);
       homeSpan.appendChild(homeText);
 
@@ -1402,7 +1438,7 @@ function renderLdc() {
       awayFlag.textContent = getCountryFlag(awayCountry);
       const awayText = document.createElement("span");
       awayText.textContent = m.away;
-      awayText.classList.add("country-" + awayCountry);
+      awayText.classList.add("country-" + (awayCountry || "other"));
       awaySpan.appendChild(awayFlag);
       awaySpan.appendChild(awayText);
 
@@ -1543,6 +1579,60 @@ function renderLdc() {
   });
 }
 
+// ---------- But aléatoire global (sur la journée actuelle, tous championnats) ----------
+function giveRandomGoal() {
+  const currentRound = parseInt(roundSelect.value || "0", 10);
+  const allChoices = [];
+
+  LEAGUE_META.forEach(l => {
+    const leagueId = l.id;
+    const rounds = leagueFixtures[leagueId] || [];
+    const round = rounds[currentRound];
+    if (!round) return; // si cette journée n'existe pas pour ce championnat
+
+    round.forEach((m, matchIndex) => {
+      allChoices.push({
+        leagueId,
+        roundIndex: currentRound,
+        matchIndex,
+        match: m
+      });
+    });
+  });
+
+  if (!allChoices.length) {
+    alert("Aucun match disponible sur cette journée pour attribuer un but aléatoire.");
+    return;
+  }
+
+  const choice = allChoices[Math.floor(Math.random() * allChoices.length)];
+  const { leagueId, roundIndex, matchIndex, match } = choice;
+
+  if (!results[leagueId]) results[leagueId] = {};
+  if (!results[leagueId][roundIndex]) results[leagueId][roundIndex] = {};
+  const existing = results[leagueId][roundIndex][matchIndex] || { home: 0, away: 0 };
+
+  const side = Math.random() < 0.5 ? "home" : "away";
+  if (existing[side] == null) existing[side] = 0;
+  existing[side] += 1;
+  const otherSide = side === "home" ? "away" : "home";
+  if (existing[otherSide] == null) existing[otherSide] = 0;
+
+  results[leagueId][roundIndex][matchIndex] = existing;
+  saveState();
+
+  // refresh si on est sur le bon écran
+  if (leagueSelect.value === leagueId && parseInt(roundSelect.value || "0",10) === roundIndex) {
+    renderFixtures();
+  }
+  if (leagueSelect.value === leagueId) {
+    renderStandings();
+  }
+
+  const scorerTeam = side === "home" ? match.home : match.away;
+  alert(`⚽ But aléatoire pour ${scorerTeam} (${getLeagueLabel(leagueId)}, J${roundIndex + 1})`);
+}
+
 // ---------- Export / Import ----------
 exportBtn.addEventListener("click", () => {
   saveState();
@@ -1673,7 +1763,6 @@ seasonEndBtn.addEventListener("click", () => {
   mapTableToHistory(n2Table, "national2");
   mapTableToHistory(n3Table, "national3");
 
-  // --- LDC : top 4 L1 + 28 clubs ---
   const l1Top4 = l1Table.slice(0, 4).map(s => s.team);
   let participants = [...l1Top4];
   let others = shuffleArray(LDC_OTHER_TEAMS);
@@ -1702,7 +1791,6 @@ seasonEndBtn.addEventListener("click", () => {
     final: []
   };
 
-  // --- Montées / descentes ---
   const l1Bottom3 = l1Table.slice(-3).map(s => s.team);
   const l2Top3    = l2Table.slice(0, 3).map(s => s.team);
   const l2Bottom3 = l2Table.slice(-3).map(s => s.team);
@@ -1724,19 +1812,19 @@ seasonEndBtn.addEventListener("click", () => {
     .concat(natTop3);
 
   const newNatTeams = natTable
-    .slice(3, natTable.length - 2) // on enlève top3 + bottom2
+    .slice(3, natTable.length - 2)
     .map(s => s.team)
     .concat(l2Bottom3)
     .concat(n2Top2);
 
   const newN2Teams = n2Table
-    .slice(2, n2Table.length - 2) // enlève top2 + bottom2
+    .slice(2, n2Table.length - 2)
     .map(s => s.team)
     .concat(natBottom2)
     .concat(n3Top2);
 
   const newN3Teams = n3Table
-    .slice(2) // enlève top2 (pas de relégation)
+    .slice(2)
     .map(s => s.team)
     .concat(n2Bottom2);
 
@@ -1811,6 +1899,8 @@ function init() {
   skinSelect.addEventListener("change", () => {
     applySkin(skinSelect.value);
   });
+
+  randomGoalBtn.addEventListener("click", giveRandomGoal);
 }
 
 init();
