@@ -2,20 +2,21 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <title>Gestion de championnats - L1 / L2 / National + LDC</title>
+  <title>Championnat ExperienceFoot - L1 / L2 / National / N2 / N3 + LDC</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     * { box-sizing: border-box; }
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       margin: 0;
       padding: 0;
-      background: radial-gradient(circle at top, #1f2937 0, #020617 45%, #000 100%);
-      color: #e5e7eb;
+      background: radial-gradient(circle at top, #14532d 0, #022c22 40%, #020617 100%);
+      color: #fefce8;
     }
     header {
-      background: linear-gradient(90deg, #0f172a, #111827);
+      background: linear-gradient(90deg, #166534, #065f46);
       padding: 12px 20px;
-      border-bottom: 1px solid #1f2937;
+      border-bottom: 1px solid #064e3b;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -43,7 +44,8 @@
       align-items: center;
       gap: 10px;
       font-size: 11px;
-      opacity: 0.8;
+      opacity: 0.9;
+      text-align: right;
     }
     main {
       padding: 18px 20px 26px;
@@ -58,9 +60,7 @@
       margin-bottom: 16px;
       font-size: 13px;
     }
-    .toolbar label {
-      margin-right: 4px;
-    }
+    .toolbar label { margin-right: 4px; }
     select {
       padding: 6px 9px;
       border-radius: 6px;
@@ -84,17 +84,13 @@
       color: white;
       border-color: #1d4ed8;
     }
-    button.primary:hover {
-      background: #1d4ed8;
-    }
+    button.primary:hover { background: #1d4ed8; }
     button.outline {
       background: transparent;
       color: #e5e7eb;
       border-color: #4b5563;
     }
-    button.outline:hover {
-      border-color: #9ca3af;
-    }
+    button.outline:hover { border-color: #9ca3af; }
     button.danger {
       background: transparent;
       color: #f97373;
@@ -106,7 +102,7 @@
     }
     .hint {
       font-size: 11px;
-      opacity: 0.7;
+      opacity: 0.8;
     }
     .panels {
       display: grid;
@@ -114,20 +110,24 @@
       gap: 18px;
     }
     @media (max-width: 900px) {
+      main { padding: 12px 10px 20px; }
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      header .right { text-align: left; }
       .panels { grid-template-columns: 1fr; }
     }
     .card {
-      background: #020617cc;
+      background: #052e16cc;
       border-radius: 14px;
-      border: 1px solid #1f2937;
+      border: 1px solid #14532d;
       padding: 14px 14px 16px;
       box-shadow: 0 16px 40px rgba(0,0,0,0.5);
       backdrop-filter: blur(10px);
       margin-top: 16px;
     }
-    .card:first-of-type {
-      margin-top: 0;
-    }
+    .card:first-of-type { margin-top: 0; }
     .card h3 {
       margin: 0 0 10px;
       font-size: 15px;
@@ -150,54 +150,54 @@
       padding: 6px 6px;
       border-bottom: 1px solid #111827;
       text-align: left;
+      vertical-align: middle;
     }
     th {
-      background: #020617;
+      background: #064e3b;
       font-weight: 500;
       font-size: 12px;
       text-transform: uppercase;
       letter-spacing: .04em;
-      color: #9ca3af;
+      color: #bbf7d0;
       position: sticky;
       top: 0;
       z-index: 1;
     }
     .fixtures-table tbody tr:nth-child(odd),
-    .ldc-table tbody tr:nth-child(odd) {
-      background: #020617;
-    }
+    .ldc-table tbody tr:nth-child(odd) { background: #052e16; }
     .fixtures-table tbody tr:nth-child(even),
-    .ldc-table tbody tr:nth-child(even) {
-      background: #030712;
-    }
+    .ldc-table tbody tr:nth-child(even) { background: #022c22; }
     .standings-table tbody tr:nth-child(odd),
     .palmares-table tbody tr:nth-child(odd),
-    .club-history-table tbody tr:nth-child(odd) {
-      background: #020617;
-    }
+    .club-history-table tbody tr:nth-child(odd) { background: #052e16; }
     .standings-table tbody tr:nth-child(even),
     .palmares-table tbody tr:nth-child(even),
-    .club-history-table tbody tr:nth-child(even) {
-      background: #030712;
-    }
-    .standings-table tr.top4 {
-      background: #022c22;
-    }
-    .standings-table tr.promotion {
-      background: #052e16;
-    }
-    .standings-table tr.relegation {
-      background: #450a0a;
-    }
+    .club-history-table tbody tr:nth-child(even) { background: #022c22; }
+    .standings-table tr.top4 { background: #15803d; }
+    .standings-table tr.promotion { background: #16a34a; }
+    .standings-table tr.relegation { background: #7f1d1d; }
     .score {
-      width: 40px;
-      padding: 3px 4px;
+      width: 52px;
+      padding: 4px 4px;
       border-radius: 6px;
       border: 1px solid #374151;
       background: #020617;
       color: #e5e7eb;
       text-align: center;
-      font-size: 12px;
+      font-size: 13px;
+    }
+
+    /* ➜ wrapper pour aligner parfaitement les scores */
+    .score-cell {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    @media (max-width: 600px) {
+      table { font-size: 12px; }
+      .score { width: 60px; font-size: 14px; }
     }
     .team-cell {
       display: flex;
@@ -235,22 +235,22 @@
       margin-left: 6px;
     }
     .badge-top4 {
-      border-color: #22c55e;
-      color: #bbf7d0;
+      border-color: #ecfeff;
+      color: #ecfeff;
     }
     .badge-promo {
-      border-color: #22c55e;
-      color: #bbf7d0;
+      border-color: #ecfeff;
+      color: #ecfeff;
     }
     .badge-rel {
-      border-color: #f97316;
+      border-color: #fed7aa;
       color: #fed7aa;
     }
     .match-tag {
       display: block;
       font-size: 11px;
       margin-top: 3px;
-      opacity: 0.85;
+      opacity: 0.9;
       color: #facc15;
     }
     .match-number {
@@ -261,6 +261,7 @@
       color: #9ca3af;
       margin-right: 6px;
     }
+
     /* Palmarès */
     #palmaresContainer h4 {
       margin: 10px 0 6px;
@@ -275,9 +276,7 @@
     @media (max-width: 900px) {
       .palmares-flex { grid-template-columns: 1fr; }
     }
-    .palmares-table th {
-      position: static;
-    }
+    .palmares-table th { position: static; }
     .ldc-winners-list {
       list-style: none;
       padding-left: 0;
@@ -296,64 +295,20 @@
       margin-bottom: 8px;
       font-size: 13px;
     }
-    .ldc-toolbar label {
-      margin-right: 4px;
-    }
+    .ldc-toolbar label { margin-right: 4px; }
 
-    /* Club history section */
+    /* Club history */
     #clubHistoryContainer h4 {
       margin: 10px 0 6px;
       font-size: 14px;
       font-weight: 600;
     }
-    .club-history-table th {
-      position: static;
-    }
-    .clickable-team {
-      cursor: pointer;
-    }
-    .clickable-team:hover {
-      text-decoration: underline;
-    }
+    .club-history-table th { position: static; }
+    .clickable-team { cursor: pointer; }
+    .clickable-team:hover { text-decoration: underline; }
 
-    /* THEME SKINS */
-    /* Thème Ligue 1 */
-    body.theme-ligue1 {
-      background: radial-gradient(circle at top, #14532d 0, #022c22 40%, #020617 100%);
-      color: #fefce8;
-    }
-    body.theme-ligue1 header {
-      background: linear-gradient(90deg, #166534, #065f46);
-      border-bottom-color: #064e3b;
-    }
-    body.theme-ligue1 .card {
-      background: #052e16cc;
-      border-color: #14532d;
-    }
-    body.theme-ligue1 th {
-      background: #064e3b;
-      color: #bbf7d0;
-    }
-    body.theme-ligue1 .standings-table tr.top4 {
-      background: #15803d;
-    }
-    body.theme-ligue1 .standings-table tr.promotion {
-      background: #16a34a;
-    }
-    body.theme-ligue1 .standings-table tr.relegation {
-      background: #7f1d1d;
-    }
-    body.theme-ligue1 .badge-top4,
-    body.theme-ligue1 .badge-promo {
-      border-color: #ecfeff;
-      color: #ecfeff;
-    }
-    body.theme-ligue1 .badge-rel {
-      border-color: #fed7aa;
-      color: #fed7aa;
-    }
-
-    /* Thème LDC */
+    /* Themes */
+    body.theme-ligue1 { /* style par défaut déjà appliqué */ }
     body.theme-ldc {
       background: radial-gradient(circle at top, #1d245a 0, #020617 40%, #000 100%);
       color: #e5e7ff;
@@ -370,15 +325,9 @@
       background: #020617;
       color: #a5b4fc;
     }
-    body.theme-ldc .standings-table tr.top4 {
-      background: #1d2667;
-    }
-    body.theme-ldc .standings-table tr.promotion {
-      background: #1e3a8a;
-    }
-    body.theme-ldc .standings-table tr.relegation {
-      background: #4a044e;
-    }
+    body.theme-ldc .standings-table tr.top4 { background: #1d2667; }
+    body.theme-ldc .standings-table tr.promotion { background: #1e3a8a; }
+    body.theme-ldc .standings-table tr.relegation { background: #4a044e; }
     body.theme-ldc .badge-top4 {
       border-color: #38bdf8;
       color: #e0f2fe;
@@ -392,18 +341,36 @@
       color: #fecaca;
     }
 
-    /* Couleurs LDC par pays (pour les noms) */
-    .country-fr { color: #60a5fa; }  /* France - bleu clair */
-    .country-es { color: #f97373; }  /* Espagne - rouge doux */
-    .country-it { color: #4ade80; }  /* Italie - vert */
-    .country-en { color: #e5e7eb; }  /* Angleterre - blanc / gris clair */
-    .country-de { color: #facc15; }  /* Allemagne - jaune */
-    .country-pt { color: #c084fc; }  /* Portugal - violet */
-    .country-nl { color: #fb923c; }  /* Pays-Bas - orange */
-    .country-tr { color: #b91c1c; }  /* Turquie - rouge foncé */
-    .country-other { color: #e5e7eb; } /* par défaut neutre */
+    body.theme-default {
+      background: radial-gradient(circle at top, #1f2937 0, #020617 45%, #000 100%);
+      color: #e5e7eb;
+    }
+    body.theme-default header {
+      background: linear-gradient(90deg, #0f172a, #111827);
+      border-bottom-color: #1f2937;
+    }
+    body.theme-default .card {
+      background: #020617cc;
+      border-color: #1f2937;
+    }
+    body.theme-default th {
+      background: #020617;
+      color: #9ca3af;
+    }
+    body.theme-default .standings-table tr.top4 { background: #1e293b; }
+    body.theme-default .standings-table tr.promotion { background: #064e3b; }
+    body.theme-default .standings-table tr.relegation { background: #450a0a; }
 
-    /* Drapeaux */
+    /* LDC countries */
+    .country-fr { color: #60a5fa; }
+    .country-es { color: #f97373; }
+    .country-it { color: #4ade80; }
+    .country-en { color: #e5e7eb; }
+    .country-de { color: #facc15; }
+    .country-pt { color: #c084fc; }
+    .country-nl { color: #fb923c; }
+    .country-tr { color: #b91c1c; }
+    .country-other { color: #e5e7eb; }
     .flag {
       margin-right: 4px;
       font-size: 13px;
@@ -411,11 +378,11 @@
   </style>
 </head>
 
-<body>
+<body class="theme-ligue1">
 <header>
-  <h1>📺 Multi-Championnats <span>L1 • L2 • National • LDC</span></h1>
+  <h1 id="appTitle">📺 Championnat ExperienceFoot – Saison S1 <span>L1 • L2 • Nat • N2 • N3 • LDC</span></h1>
   <div class="right">
-    <span>Saisons + LDC + palmarès sauvés en local</span>
+    <span>Sauvegarde locale automatique + export JSON</span>
   </div>
 </header>
 
@@ -432,8 +399,8 @@
     <div>
       <label for="skinSelect">Skin :</label>
       <select id="skinSelect">
-        <option value="default">Standard</option>
         <option value="ligue1">Ligue 1</option>
+        <option value="default">Standard</option>
         <option value="ldc">Ligue des Champions</option>
       </select>
     </div>
@@ -444,22 +411,24 @@
       📥 Importer une sauvegarde
     </button>
     <button id="seasonEndBtn" class="outline">
-      ⏹️ Clôturer la saison (montées + LDC + palmarès)
+      ⏹️ Clôturer la saison (montées / descentes / LDC / palmarès)
     </button>
     <button id="resetBtn" class="danger">
       🧹 Réinitialiser tout
     </button>
-    <span class="hint">L1 : Top 4 = LDC, 3 derniers → L2 • L2 : 3 montent / 3 descendent • Nat : 3 montent.</span>
+    <span class="hint">
+      L1: 4 LDC / 3 desc. · L2: 3 montent / 3 desc. · Nat: 3 montent / 2 desc. · N2: 2 montent / 2 desc. · N3: 2 montent.
+    </span>
   </div>
 
   <div class="panels">
     <div class="card">
-      <h3>🗓️ Matchs <span>(scores + anecdotes)</span></h3>
+      <h3 id="fixturesTitle">🗓️ Matchs – Ligue 1 (J1) <span>Scores + anecdotes</span></h3>
       <div id="fixturesContainer"></div>
     </div>
 
     <div class="card">
-      <h3>🏆 Classement <span>(Top 4 / Promos / Relégations)</span></h3>
+      <h3 id="standingsTitle">🏆 Classement – Ligue 1 <span>Top 4 = LDC</span></h3>
       <div id="standingsContainer"></div>
     </div>
   </div>
@@ -470,7 +439,7 @@
   </div>
 
   <div class="card">
-    <h3>🏆 Ligue des Champions <span>Édition en cours (scores des tours)</span></h3>
+    <h3>🏆 Ligue des Champions <span>Édition en cours (32 équipes)</span></h3>
     <div id="ldcContainer"></div>
   </div>
 
@@ -483,11 +452,13 @@
 <input type="file" id="importFile" accept="application/json" style="display:none;" />
 
 <script>
-// ---------- Config de base ----------
+// ---------- Config ----------
 const LEAGUE_META = [
-  { id: "ligue1", name: "Ligue 1" },
-  { id: "ligue2", name: "Ligue 2" },
-  { id: "national", name: "National" }
+  { id: "ligue1",    name: "Ligue 1" },
+  { id: "ligue2",    name: "Ligue 2" },
+  { id: "national",  name: "National" },
+  { id: "national2", name: "National 2" },
+  { id: "national3", name: "National 3" }
 ];
 
 const DEFAULT_TEAMS = {
@@ -508,10 +479,20 @@ const DEFAULT_TEAMS = {
     "Concarneau","Stade Briochin","Versailles","Caen","Aubagne",
     "Orléans","Dijon","Le Puy","Sochaux","Paris 13 Atletico",
     "QRM","Bourg-Péronnas","Ajaccio"
+  ],
+  national2: [
+    "US Créteil-Lusitanos","FC Martigues","US Boulogne","US Avranches","Les Herbiers VF",
+    "FC Sète 34","Andrézieux-Bouthéon FC","CS Sedan Ardennes","FC Bastia-Borgo","AS Béziers",
+    "US Colomiers","Vannes OC","Nîmes Olympique","Épinal","Louhans-Cuiseaux","AS Yzeure"
+  ],
+  national3: [
+    "AS Cannes","RC Grasse","US Granville","Thonon Évian","Lyon La Duchère",
+    "Hyères FC","US Albi","Bergerac Périgord FC","Rumilly Vallières","US Saint-Malo",
+    "USM Saran","Racing Club de France","Racing Besançon","Istres FC",
+    "Voltigeurs de Châteaubriant","Blois Football 41"
   ]
 };
 
-// 28 clubs européens pour compléter la LDC (4 FR + 28 = 32)
 const LDC_OTHER_TEAMS = [
   "Real Madrid","FC Barcelone","Manchester City","Liverpool",
   "Bayern Munich","Borussia Dortmund","Juventus","Inter Milan",
@@ -522,15 +503,11 @@ const LDC_OTHER_TEAMS = [
   "Bayer Leverkusen","Newcastle United","Aston Villa","Galatasaray"
 ];
 
-// mapping clubs -> pays pour la LDC
 const CLUB_COUNTRY = {
-  // Espagne
   "Real Madrid": "es",
   "FC Barcelone": "es",
   "Atlético Madrid": "es",
   "Sevilla": "es",
-
-  // Angleterre
   "Manchester City": "en",
   "Liverpool": "en",
   "Chelsea": "en",
@@ -538,36 +515,26 @@ const CLUB_COUNTRY = {
   "Tottenham": "en",
   "Newcastle United": "en",
   "Aston Villa": "en",
-
-  // Allemagne
   "Bayern Munich": "de",
   "Borussia Dortmund": "de",
   "RB Leipzig": "de",
   "Bayer Leverkusen": "de",
-
-  // Italie
   "Juventus": "it",
   "Inter Milan": "it",
   "AC Milan": "it",
   "Napoli": "it",
   "Roma": "it",
   "Lazio": "it",
-
-  // Portugal
   "Porto": "pt",
   "Benfica": "pt",
   "Sporting CP": "pt",
-
-  // Pays-Bas
   "Ajax": "nl",
   "PSV Eindhoven": "nl",
   "Feyenoord": "nl",
-
-  // Turquie
   "Galatasaray": "tr"
 };
 
-const STORAGE_KEY = "championnats_state_v9_ldc_32";
+const STORAGE_KEY = "championnats_state_v11_nat2_nat3";
 
 // ---------- Etat ----------
 let state = loadState();
@@ -576,7 +543,7 @@ let results = state.results || {};
 let palmares = state.palmares;
 let currentSeason = state.season;
 let currentLdc = state.currentLdc || null;
-let currentSkin = state.uiSkin || "default";
+let currentSkin = state.uiSkin || "ligue1";
 
 // ---------- Chargement / sauvegarde ----------
 function loadState() {
@@ -589,18 +556,21 @@ function loadState() {
         palmares: { seasons: [], ldcWinners: [], leagueHistory: [] },
         season: 1,
         currentLdc: null,
-        uiSkin: "default"
+        uiSkin: "ligue1"
       };
     }
     const parsed = JSON.parse(raw);
     if (!parsed.leagueTeams) parsed.leagueTeams = JSON.parse(JSON.stringify(DEFAULT_TEAMS));
+    for (const k of Object.keys(DEFAULT_TEAMS)) {
+      if (!parsed.leagueTeams[k]) parsed.leagueTeams[k] = DEFAULT_TEAMS[k].slice();
+    }
     if (!parsed.results) parsed.results = {};
     if (!parsed.palmares) parsed.palmares = { seasons: [], ldcWinners: [], leagueHistory: [] };
     if (!parsed.palmares.ldcWinners) parsed.palmares.ldcWinners = [];
     if (!parsed.palmares.leagueHistory) parsed.palmares.leagueHistory = [];
     if (!parsed.season) parsed.season = 1;
     if (parsed.currentLdc === undefined) parsed.currentLdc = null;
-    if (!parsed.uiSkin) parsed.uiSkin = "default";
+    if (!parsed.uiSkin) parsed.uiSkin = "ligue1";
     return parsed;
   } catch (e) {
     console.error(e);
@@ -610,7 +580,7 @@ function loadState() {
       palmares: { seasons: [], ldcWinners: [], leagueHistory: [] },
       season: 1,
       currentLdc: null,
-      uiSkin: "default"
+      uiSkin: "ligue1"
     };
   }
 }
@@ -645,9 +615,7 @@ function createLogoImg(team) {
   img.className = "logo";
   img.src = getLogoSrc(team);
   img.alt = team;
-  img.onerror = function () {
-    this.style.display = "none";
-  };
+  img.onerror = function () { this.style.display = "none"; };
   return img;
 }
 
@@ -666,7 +634,6 @@ const SPECIAL_MATCHES = {
     "ogc nice|olympique de marseille": "🔥 Choc de la Méditerranée"
   },
   ligue2: {
-    "ea guingamp|stade brestois 29": "⚔️ Derby breton (si Brest descend)",
     "as saint-Étienne|grenoble foot 38": "⛰️ Derby du Rhône-Alpes",
     "as saint-Étienne|clermont foot 63": "⛰️ Derby du Massif central"
   },
@@ -674,7 +641,7 @@ const SPECIAL_MATCHES = {
     "girondins de bordeaux|châteauroux": "⭐ Affiche de prestige en National",
     "girondins de bordeaux|orléans": "⭐ Gros nom en déplacement",
     "dijon|sochaux": "🟡🔵 Duel d’anciens de L1",
-    "valenciennes|rouen": "⚔️ Duel du Nord / Normandie"
+    "valenciennes|rouen": "⚔️ Nord vs Normandie"
   }
 };
 
@@ -695,30 +662,24 @@ function getDynamicTag(leagueId, home, away, rankMap, totalTeams) {
   const ra = rankMap[away];
   if (!rh || !ra) return "";
 
-  const bottom3Start = totalTeams - 2;
-  const bottom4Start = totalTeams - 3;
+  let bottomCount = 3;
+  if (leagueId === "national" || leagueId === "national2") bottomCount = 2;
+  if (leagueId === "national3") bottomCount = 0;
 
-  if (rh <= 4 && ra <= 4) {
-    return "⚡ Choc du haut de tableau";
-  }
-  if (rh <= 6 && ra <= 6) {
-    return "⚡ Duel du haut de tableau";
-  }
+  const bottomStart = totalTeams - bottomCount;
 
-  if (rh >= bottom3Start && ra >= bottom3Start) {
+  if (rh <= 4 && ra <= 4) return "⚡ Choc du haut de tableau";
+  if (rh <= 6 && ra <= 6) return "⚡ Duel du haut de tableau";
+
+  if (bottomCount > 0 && rh >= bottomStart && ra >= bottomStart) {
     return "😨 Match de la peur (relégation)";
   }
-  if (rh >= bottom4Start && ra >= bottom4Start) {
-    return "😰 Duel pour le maintien";
-  }
-
   return "";
 }
 
 function buildMatchTag(leagueId, home, away, rankMap, totalTeams) {
   const staticTag = getStaticTag(leagueId, home, away);
   const dynamicTag = getDynamicTag(leagueId, home, away, rankMap, totalTeams);
-
   if (staticTag && dynamicTag && staticTag !== dynamicTag) {
     return staticTag + " • " + dynamicTag;
   }
@@ -730,7 +691,9 @@ function isFrenchClub(name) {
   const all = [
     ...leagueTeams.ligue1,
     ...leagueTeams.ligue2,
-    ...leagueTeams.national
+    ...leagueTeams.national,
+    ...leagueTeams.national2,
+    ...leagueTeams.national3
   ];
   return all.includes(name);
 }
@@ -746,7 +709,7 @@ function getCountryFlag(code) {
     case "fr": return "🇫🇷";
     case "es": return "🇪🇸";
     case "it": return "🇮🇹";
-    case "en": return "🏴"; // Angleterre (drapeau St George)
+    case "en": return "🏴";
     case "de": return "🇩🇪";
     case "pt": return "🇵🇹";
     case "nl": return "🇳🇱";
@@ -755,7 +718,6 @@ function getCountryFlag(code) {
   }
 }
 
-// Couleurs pour les dégradés LDC
 const COUNTRY_COLORS = {
   fr: "#60a5fa",
   es: "#f97373",
@@ -768,7 +730,7 @@ const COUNTRY_COLORS = {
   other: "#6b7280"
 };
 
-// ---------- Calendriers championnats ----------
+// ---------- Calendriers ----------
 const leagueFixtures = {};
 
 function generateFixtures(teams) {
@@ -822,15 +784,42 @@ const importBtn = document.getElementById("importBtn");
 const importFile = document.getElementById("importFile");
 const seasonEndBtn = document.getElementById("seasonEndBtn");
 const resetBtn = document.getElementById("resetBtn");
+const appTitle = document.getElementById("appTitle");
+const fixturesTitle = document.getElementById("fixturesTitle");
+const standingsTitle = document.getElementById("standingsTitle");
 
 // ---------- Skins ----------
 function applySkin(skin) {
   const body = document.body;
-  body.classList.remove("theme-ligue1", "theme-ldc");
+  body.classList.remove("theme-ligue1", "theme-ldc", "theme-default");
   if (skin === "ligue1") body.classList.add("theme-ligue1");
   else if (skin === "ldc") body.classList.add("theme-ldc");
+  else body.classList.add("theme-default");
   currentSkin = skin;
   saveState();
+}
+
+// ---------- UI titres ----------
+function getLeagueLabel(id) {
+  const meta = LEAGUE_META.find(l => l.id === id);
+  return meta ? meta.name : id;
+}
+
+function updateTitles() {
+  const leagueId = leagueSelect.value || "ligue1";
+  const roundIndex = parseInt(roundSelect.value || "0", 10);
+  const leagueName = getLeagueLabel(leagueId);
+  appTitle.innerHTML = `📺 Championnat ExperienceFoot – Saison S${currentSeason} <span>L1 • L2 • Nat • N2 • N3 • LDC</span>`;
+  fixturesTitle.innerHTML = `🗓️ Matchs – ${leagueName} (J${roundIndex + 1}) <span>Scores + anecdotes</span>`;
+
+  let extra = "";
+  if (leagueId === "ligue1") extra = "Top 4 = LDC, 3 derniers descendent";
+  else if (leagueId === "ligue2") extra = "Top 3 = montée, 3 derniers descendent";
+  else if (leagueId === "national") extra = "Top 3 = montée, 2 derniers descendent";
+  else if (leagueId === "national2") extra = "Top 2 = montée, 2 derniers descendent";
+  else if (leagueId === "national3") extra = "Top 2 = montée";
+  else extra = "";
+  standingsTitle.innerHTML = `🏆 Classement – ${leagueName} <span>${extra}</span>`;
 }
 
 // ---------- UI championnats ----------
@@ -874,7 +863,6 @@ function computeStandingsFor(leagueId) {
       const ag = res.away;
       const home = m.home;
       const away = m.away;
-
       if (!stats[home] || !stats[away]) return;
 
       stats[home].j++;
@@ -884,14 +872,9 @@ function computeStandingsFor(leagueId) {
       stats[away].bp += ag;
       stats[away].bc += hg;
 
-      if (hg > ag) {
-        stats[home].pts += 3;
-      } else if (hg < ag) {
-        stats[away].pts += 3;
-      } else {
-        stats[home].pts++;
-        stats[away].pts++;
-      }
+      if (hg > ag) stats[home].pts += 3;
+      else if (hg < ag) stats[away].pts += 3;
+      else { stats[home].pts++; stats[away].pts++; }
     });
   });
 
@@ -924,8 +907,19 @@ function renderStandings() {
     const tr = document.createElement("tr");
 
     const isL1Top4 = (leagueId === "ligue1" && i < 4);
-    const isPromo = ((leagueId === "ligue2" || leagueId === "national") && i < 3);
-    const isRelegation = (i >= teams.length - 3);
+
+    let promoCount = 0;
+    if (leagueId === "ligue2" || leagueId === "national") promoCount = 3;
+    else if (leagueId === "national2" || leagueId === "national3") promoCount = 2;
+
+    const isPromo = i < promoCount;
+
+    let relegCount = 0;
+    if (leagueId === "ligue1" || leagueId === "ligue2") relegCount = 3;
+    else if (leagueId === "national" || leagueId === "national2") relegCount = 2;
+    else relegCount = 0;
+
+    const isRelegation = (relegCount > 0 && i >= teams.length - relegCount);
 
     if (isL1Top4) tr.classList.add("top4");
     if (isPromo) tr.classList.add("promotion");
@@ -942,9 +936,7 @@ function renderStandings() {
     const nameSpan = document.createElement("span");
     nameSpan.textContent = s.team;
     nameSpan.className = "clickable-team";
-    nameSpan.addEventListener("click", () => {
-      showClubHistory(s.team);
-    });
+    nameSpan.addEventListener("click", () => showClubHistory(s.team));
     teamDiv.appendChild(nameSpan);
 
     if (isL1Top4) {
@@ -958,7 +950,6 @@ function renderStandings() {
       badge.textContent = "Promo";
       teamDiv.appendChild(badge);
     }
-
     if (isRelegation) {
       const badge = document.createElement("span");
       badge.className = "badge badge-rel";
@@ -993,7 +984,7 @@ function renderStandings() {
   standingsContainer.appendChild(table);
 }
 
-// ---------- Fixtures championnats ----------
+// ---------- Fixtures ----------
 function renderFixtures() {
   const id = leagueSelect.value;
   const r = parseInt(roundSelect.value || "0", 10);
@@ -1001,9 +992,7 @@ function renderFixtures() {
 
   const standing = computeStandingsFor(id);
   const rankMap = {};
-  standing.forEach((s, idx) => {
-    rankMap[s.team] = idx + 1;
-  });
+  standing.forEach((s, idx) => { rankMap[s.team] = idx + 1; });
   const totalTeams = leagueTeams[id]?.length || 0;
 
   fixturesContainer.innerHTML = "";
@@ -1018,7 +1007,6 @@ function renderFixtures() {
 
   fixtures.forEach((m, i) => {
     const tr = document.createElement("tr");
-
     const tdMatch = document.createElement("td");
 
     const lineWrapper = document.createElement("div");
@@ -1049,7 +1037,6 @@ function renderFixtures() {
     lineWrapper.appendChild(homeSpan);
     lineWrapper.appendChild(vsSpan);
     lineWrapper.appendChild(awaySpan);
-
     tdMatch.appendChild(lineWrapper);
 
     const tagText = buildMatchTag(id, m.home, m.away, rankMap, totalTeams);
@@ -1089,9 +1076,16 @@ function renderFixtures() {
     homeInput.onchange = onChange;
     awayInput.onchange = onChange;
 
-    tdScore.appendChild(homeInput);
-    tdScore.appendChild(document.createTextNode("  -  "));
-    tdScore.appendChild(awayInput);
+    // ➜ wrapper pour un alignement parfait du score
+    const scoreWrapper = document.createElement("div");
+    scoreWrapper.className = "score-cell";
+    scoreWrapper.appendChild(homeInput);
+    const dash = document.createElement("span");
+    dash.textContent = "-";
+    scoreWrapper.appendChild(dash);
+    scoreWrapper.appendChild(awayInput);
+
+    tdScore.appendChild(scoreWrapper);
 
     tr.appendChild(tdMatch);
     tr.appendChild(tdScore);
@@ -1100,6 +1094,7 @@ function renderFixtures() {
 
   table.appendChild(tbody);
   fixturesContainer.appendChild(table);
+  updateTitles();
 }
 
 // ---------- Palmarès ----------
@@ -1109,10 +1104,9 @@ function renderPalmares() {
   const wrapper = document.createElement("div");
   wrapper.className = "palmares-flex";
 
-  // Champions
   const left = document.createElement("div");
   const h4a = document.createElement("h4");
-  h4a.textContent = "🏅 Champions par saison";
+  h4a.textContent = "🏅 Champions par saison (L1 / L2 / Nat)";
   left.appendChild(h4a);
 
   if (!palmares.seasons || palmares.seasons.length === 0) {
@@ -1153,7 +1147,6 @@ function renderPalmares() {
     left.appendChild(table);
   }
 
-  // Palmarès LDC (vainqueurs finaux)
   const right = document.createElement("div");
   const h4b = document.createElement("h4");
   h4b.textContent = "🏆 Vainqueurs Ligue des Champions";
@@ -1174,19 +1167,15 @@ function renderPalmares() {
       .forEach(entry => {
         const li = document.createElement("li");
         const country = getClubCountryCode(entry.winner);
-
         const flagSpan = document.createElement("span");
         flagSpan.className = "flag";
         flagSpan.textContent = getCountryFlag(country);
-
         const span = document.createElement("span");
         span.textContent = entry.winner;
         span.classList.add("country-" + country);
-
         li.textContent = "S" + entry.season + " – ";
         li.appendChild(flagSpan);
         li.appendChild(span);
-
         ul.appendChild(li);
       });
     right.appendChild(ul);
@@ -1197,7 +1186,7 @@ function renderPalmares() {
   palmaresContainer.appendChild(wrapper);
 }
 
-// ---------- Historique d'un club ----------
+// ---------- Historique club ----------
 function showClubHistory(teamName) {
   clubHistoryContainer.innerHTML = "";
 
@@ -1216,9 +1205,7 @@ function showClubHistory(teamName) {
 
   const rows = [];
   palmares.leagueHistory.forEach(entry => {
-    const leagueLabel = entry.leagueId === "ligue1" ? "Ligue 1"
-                        : entry.leagueId === "ligue2" ? "Ligue 2"
-                        : "National";
+    const leagueLabel = getLeagueLabel(entry.leagueId);
     entry.table.forEach(t => {
       if (t.team === teamName) {
         rows.push({
@@ -1246,7 +1233,7 @@ function showClubHistory(teamName) {
   const table = document.createElement("table");
   table.className = "club-history-table";
   const thead = document.createElement("thead");
-  thead.innerHTML = "<tr><th>Saison</th><th>Compétition</th><th>Position</th><th>Pts</th><th>Diff</th></tr>";
+  thead.innerHTML = "<tr><th>Saison</th><th>Compétition</th><th>Pos</th><th>Pts</th><th>Diff</th></tr>";
   table.appendChild(thead);
 
   const tbody = document.createElement("tbody");
@@ -1262,7 +1249,6 @@ function showClubHistory(teamName) {
     tdPts.textContent = r.pts;
     const tdD = document.createElement("td");
     tdD.textContent = r.diff;
-
     tr.appendChild(tdS);
     tr.appendChild(tdL);
     tr.appendChild(tdP);
@@ -1275,7 +1261,7 @@ function showClubHistory(teamName) {
   clubHistoryContainer.appendChild(table);
 }
 
-// ---------- LDC helpers ----------
+// ---------- LDC util ----------
 function shuffleArray(arr) {
   const a = arr.slice();
   for (let i = a.length - 1; i > 0; i--) {
@@ -1284,11 +1270,10 @@ function shuffleArray(arr) {
   }
   return a;
 }
-
 function getMatchWinnerObj(m) {
   if (typeof m.sh !== "number" || typeof m.sa !== "number") return null;
   if (isNaN(m.sh) || isNaN(m.sa)) return null;
-  if (m.sh === m.sa) return null; // pas de nul en élimination directe
+  if (m.sh === m.sa) return null;
   return m.sh > m.sa ? m.home : m.away;
 }
 
@@ -1300,7 +1285,7 @@ function renderLdc() {
     const p = document.createElement("p");
     p.style.fontSize = "12px";
     p.style.opacity = "0.8";
-    p.textContent = "Aucune édition de LDC en cours. Termine une saison pour générer une nouvelle Ligue des Champions.";
+    p.textContent = "Aucune édition de LDC en cours. Clôture une saison pour générer une nouvelle Ligue des Champions (32 équipes).";
     ldcContainer.appendChild(p);
     return;
   }
@@ -1308,7 +1293,7 @@ function renderLdc() {
   const hInfo = document.createElement("p");
   hInfo.style.fontSize = "12px";
   hInfo.style.opacity = "0.9";
-  hInfo.textContent = "Saison S" + currentLdc.season + " – 32 équipes (4 françaises qualifiées depuis la L1).";
+  hInfo.textContent = "Saison S" + currentLdc.season + " – 32 équipes (Top 4 de L1 + 28 clubs européens).";
   ldcContainer.appendChild(hInfo);
 
   const toolbar = document.createElement("div");
@@ -1319,14 +1304,14 @@ function renderLdc() {
   labelRound.htmlFor = "ldcRoundSelect";
   toolbar.appendChild(labelRound);
 
-  const roundSelect = document.createElement("select");
-  roundSelect.id = "ldcRoundSelect";
+  const roundSelectEl = document.createElement("select");
+  roundSelectEl.id = "ldcRoundSelect";
 
   const roundsOrder = [
-    { key: "r32", label: "16èmes de finale (32 équipes)" },
-    { key: "r16", label: "8èmes de finale" },
-    { key: "qf", label: "Quarts de finale" },
-    { key: "sf", label: "Demi-finales" },
+    { key: "r32",   label: "16èmes (32 équipes)" },
+    { key: "r16",   label: "8èmes de finale" },
+    { key: "qf",    label: "Quarts de finale" },
+    { key: "sf",    label: "Demi-finales" },
     { key: "final", label: "Finale" }
   ];
 
@@ -1334,10 +1319,10 @@ function renderLdc() {
     const opt = document.createElement("option");
     opt.value = r.key;
     opt.textContent = r.label;
-    roundSelect.appendChild(opt);
+    roundSelectEl.appendChild(opt);
   });
 
-  toolbar.appendChild(roundSelect);
+  toolbar.appendChild(roundSelectEl);
 
   const nextBtn = document.createElement("button");
   nextBtn.className = "outline";
@@ -1362,11 +1347,8 @@ function renderLdc() {
       const p = document.createElement("p");
       p.style.fontSize = "12px";
       p.style.opacity = "0.8";
-      if (roundKey === "r32") {
-        p.textContent = "Les 16èmes seront générés automatiquement à la fin de la saison.";
-      } else {
-        p.textContent = "Ce tour n’a pas encore été généré.";
-      }
+      if (roundKey === "r32") p.textContent = "Les 16èmes seront générés automatiquement à la fin de la saison.";
+      else p.textContent = "Ce tour n’a pas encore été généré.";
       tableWrapper.appendChild(p);
       return;
     }
@@ -1382,6 +1364,16 @@ function renderLdc() {
     matches.forEach((m, i) => {
       const tr = document.createElement("tr");
 
+      const homeCountry = getClubCountryCode(m.home);
+      const awayCountry = getClubCountryCode(m.away);
+      const c1 = COUNTRY_COLORS[homeCountry] || COUNTRY_COLORS.other;
+      const c2 = COUNTRY_COLORS[awayCountry] || COUNTRY_COLORS.other;
+      if (homeCountry === awayCountry) {
+        tr.style.background = `linear-gradient(90deg, ${c1}22, ${c1}44)`;
+      } else {
+        tr.style.background = `linear-gradient(90deg, ${c1}22, ${c2}22)`;
+      }
+
       const tdMatch = document.createElement("td");
       const lineWrapper = document.createElement("div");
 
@@ -1393,32 +1385,24 @@ function renderLdc() {
       const homeSpan = document.createElement("span");
       homeSpan.className = "match-team";
       homeSpan.appendChild(createLogoImg(m.home));
-
-      const homeCountry = getClubCountryCode(m.home);
       const homeFlag = document.createElement("span");
       homeFlag.className = "flag";
       homeFlag.textContent = getCountryFlag(homeCountry);
-
       const homeText = document.createElement("span");
       homeText.textContent = m.home;
       homeText.classList.add("country-" + homeCountry);
-
       homeSpan.appendChild(homeFlag);
       homeSpan.appendChild(homeText);
 
       const awaySpan = document.createElement("span");
       awaySpan.className = "match-team";
       awaySpan.appendChild(createLogoImg(m.away));
-
-      const awayCountry = getClubCountryCode(m.away);
       const awayFlag = document.createElement("span");
       awayFlag.className = "flag";
       awayFlag.textContent = getCountryFlag(awayCountry);
-
       const awayText = document.createElement("span");
       awayText.textContent = m.away;
       awayText.classList.add("country-" + awayCountry);
-
       awaySpan.appendChild(awayFlag);
       awaySpan.appendChild(awayText);
 
@@ -1429,17 +1413,7 @@ function renderLdc() {
       lineWrapper.appendChild(homeSpan);
       lineWrapper.appendChild(vsSpan);
       lineWrapper.appendChild(awaySpan);
-
       tdMatch.appendChild(lineWrapper);
-
-      // Dégradé de fond selon pays
-      const c1 = COUNTRY_COLORS[homeCountry] || COUNTRY_COLORS.other;
-      const c2 = COUNTRY_COLORS[awayCountry] || COUNTRY_COLORS.other;
-      if (homeCountry === awayCountry) {
-        tr.style.background = `linear-gradient(90deg, ${c1}22, ${c1}44)`;
-      } else {
-        tr.style.background = `linear-gradient(90deg, ${c1}22, ${c2}22)`;
-      }
 
       const tdScore = document.createElement("td");
       tdScore.style.textAlign = "center";
@@ -1468,9 +1442,15 @@ function renderLdc() {
       homeInput.onchange = onChange;
       awayInput.onchange = onChange;
 
-      tdScore.appendChild(homeInput);
-      tdScore.appendChild(document.createTextNode("  -  "));
-      tdScore.appendChild(awayInput);
+      const scoreWrapper = document.createElement("div");
+      scoreWrapper.className = "score-cell";
+      scoreWrapper.appendChild(homeInput);
+      const dash = document.createElement("span");
+      dash.textContent = "-";
+      scoreWrapper.appendChild(dash);
+      scoreWrapper.appendChild(awayInput);
+
+      tdScore.appendChild(scoreWrapper);
 
       tr.appendChild(tdMatch);
       tr.appendChild(tdScore);
@@ -1481,15 +1461,14 @@ function renderLdc() {
     tableWrapper.appendChild(table);
   }
 
-  // première vue = 16èmes
   renderRoundTable("r32");
 
-  roundSelect.addEventListener("change", () => {
-    renderRoundTable(roundSelect.value);
+  roundSelectEl.addEventListener("change", () => {
+    renderRoundTable(roundSelectEl.value);
   });
 
   nextBtn.addEventListener("click", () => {
-    const currentKey = roundSelect.value;
+    const currentKey = roundSelectEl.value;
     const order = ["r32","r16","qf","sf","final"];
     const idx = order.indexOf(currentKey);
     if (idx === -1 || idx === order.length - 1) {
@@ -1530,7 +1509,7 @@ function renderLdc() {
 
     currentLdc[nextKey] = nextMatches;
     saveState();
-    roundSelect.value = nextKey;
+    roundSelectEl.value = nextKey;
     renderRoundTable(nextKey);
   });
 
@@ -1607,7 +1586,11 @@ importFile.addEventListener("change", () => {
       if (!state.palmares.leagueHistory) state.palmares.leagueHistory = [];
       if (!state.season) state.season = 1;
       if (state.currentLdc === undefined) state.currentLdc = null;
-      if (!state.uiSkin) state.uiSkin = "default";
+      if (!state.uiSkin) state.uiSkin = "ligue1";
+
+      for (const k of Object.keys(DEFAULT_TEAMS)) {
+        if (!state.leagueTeams[k]) state.leagueTeams[k] = DEFAULT_TEAMS[k].slice();
+      }
 
       leagueTeams = state.leagueTeams;
       results = state.results || {};
@@ -1618,13 +1601,18 @@ importFile.addEventListener("change", () => {
 
       regenerateAllFixtures();
       initLeagueSelect();
+      leagueSelect.value = "ligue1";
       updateRoundSelect();
+      roundSelect.value = "0";
+      applySkin(currentSkin);
+      skinSelect.value = currentSkin;
+
       renderFixtures();
       renderStandings();
       renderPalmares();
       renderLdc();
-      applySkin(currentSkin);
-      skinSelect.value = currentSkin;
+      clubHistoryContainer.innerHTML = "";
+      updateTitles();
       saveState();
       alert("Sauvegarde importée avec succès ✅");
     } catch (err) {
@@ -1637,29 +1625,30 @@ importFile.addEventListener("change", () => {
 
 // ---------- Clôture de saison ----------
 seasonEndBtn.addEventListener("click", () => {
-  if (!confirm("Clôturer la saison S" + currentSeason + " et appliquer montées / descentes + palmarès + LDC ?")) {
+  if (!confirm("Clôturer la saison S" + currentSeason + " et appliquer montées / descentes + LDC + palmarès ?")) {
     return;
   }
 
-  const l1Table = computeStandingsFor("ligue1");
-  const l2Table = computeStandingsFor("ligue2");
+  const l1Table  = computeStandingsFor("ligue1");
+  const l2Table  = computeStandingsFor("ligue2");
   const natTable = computeStandingsFor("national");
+  const n2Table  = computeStandingsFor("national2");
+  const n3Table  = computeStandingsFor("national3");
 
-  if (l1Table.length === 0 || l2Table.length === 0 || natTable.length === 0) {
+  if (!l1Table.length || !l2Table.length || !natTable.length || !n2Table.length || !n3Table.length) {
     alert("Il manque des équipes pour calculer correctement la fin de saison.");
     return;
   }
 
-  // Palmarès champions
   const seasonRecord = {
     season: currentSeason,
     ligue1: l1Table[0]?.team || null,
     ligue2: l2Table[0]?.team || null,
     national: natTable[0]?.team || null
   };
+  if (!palmares.seasons) palmares.seasons = [];
   palmares.seasons.push(seasonRecord);
 
-  // Historique complet de classement
   if (!palmares.leagueHistory) palmares.leagueHistory = [];
 
   function mapTableToHistory(table, leagueId) {
@@ -1681,16 +1670,16 @@ seasonEndBtn.addEventListener("click", () => {
   mapTableToHistory(l1Table, "ligue1");
   mapTableToHistory(l2Table, "ligue2");
   mapTableToHistory(natTable, "national");
+  mapTableToHistory(n2Table, "national2");
+  mapTableToHistory(n3Table, "national3");
 
-  // LDC : top 4 L1 qualifiés + 28 autres clubs → 32 équipes
+  // --- LDC : top 4 L1 + 28 clubs ---
   const l1Top4 = l1Table.slice(0, 4).map(s => s.team);
   let participants = [...l1Top4];
-
   let others = shuffleArray(LDC_OTHER_TEAMS);
   while (participants.length < 32 && others.length > 0) {
     participants.push(others.shift());
   }
-
   participants = shuffleArray(participants);
 
   const r32 = [];
@@ -1713,11 +1702,15 @@ seasonEndBtn.addEventListener("click", () => {
     final: []
   };
 
-  // Montées / descentes
+  // --- Montées / descentes ---
   const l1Bottom3 = l1Table.slice(-3).map(s => s.team);
   const l2Top3    = l2Table.slice(0, 3).map(s => s.team);
   const l2Bottom3 = l2Table.slice(-3).map(s => s.team);
   const natTop3   = natTable.slice(0, 3).map(s => s.team);
+  const natBottom2 = natTable.slice(-2).map(s => s.team);
+  const n2Top2    = n2Table.slice(0, 2).map(s => s.team);
+  const n2Bottom2 = n2Table.slice(-2).map(s => s.team);
+  const n3Top2    = n3Table.slice(0, 2).map(s => s.team);
 
   const newL1Teams = l1Table
     .slice(0, l1Table.length - 3)
@@ -1731,37 +1724,56 @@ seasonEndBtn.addEventListener("click", () => {
     .concat(natTop3);
 
   const newNatTeams = natTable
-    .slice(3)
+    .slice(3, natTable.length - 2) // on enlève top3 + bottom2
     .map(s => s.team)
-    .concat(l2Bottom3);
+    .concat(l2Bottom3)
+    .concat(n2Top2);
 
-  leagueTeams["ligue1"] = newL1Teams;
-  leagueTeams["ligue2"] = newL2Teams;
-  leagueTeams["national"] = newNatTeams;
+  const newN2Teams = n2Table
+    .slice(2, n2Table.length - 2) // enlève top2 + bottom2
+    .map(s => s.team)
+    .concat(natBottom2)
+    .concat(n3Top2);
 
-  // Nouvelle saison
+  const newN3Teams = n3Table
+    .slice(2) // enlève top2 (pas de relégation)
+    .map(s => s.team)
+    .concat(n2Bottom2);
+
+  leagueTeams["ligue1"]    = newL1Teams;
+  leagueTeams["ligue2"]    = newL2Teams;
+  leagueTeams["national"]  = newNatTeams;
+  leagueTeams["national2"] = newN2Teams;
+  leagueTeams["national3"] = newN3Teams;
+
   currentSeason += 1;
 
   regenerateAllFixtures();
   results = {};
   saveState();
 
+  leagueSelect.value = "ligue1";
   updateRoundSelect();
+  roundSelect.value = "0";
+
   renderFixtures();
   renderStandings();
   renderPalmares();
   renderLdc();
   clubHistoryContainer.innerHTML = "";
+  updateTitles();
 
-  alert("Saison clôturée !\n" +
-        "- Champions enregistrés\n" +
-        "- Classements complets ajoutés à l’historique\n" +
-        "- Top 4 de L1 qualifiés en LDC (16èmes générés)\n" +
-        "- Montées / descentes appliquées\n" +
-        "Saison suivante : S" + currentSeason);
+  alert(
+    "Saison clôturée !\n" +
+    "- Champions enregistrés (L1 / L2 / Nat)\n" +
+    "- Historique complet pour L1 / L2 / Nat / N2 / N3\n" +
+    "- Top 4 de L1 qualifiés en LDC (16èmes générés)\n" +
+    "- Montées / descentes appliquées jusqu’en N3\n" +
+    "Saison suivante : S" + currentSeason
+  );
 });
 
-// ---------- Réinitialisation totale ----------
+// ---------- Reset ----------
 resetBtn.addEventListener("click", () => {
   if (!confirm("⚠️ Tu vas TOUT effacer (résultats, palmarès, LDC, montées/relégations) et repartir de zéro. Tu es sûr ?")) {
     return;
@@ -1771,28 +1783,37 @@ resetBtn.addEventListener("click", () => {
 });
 
 // ---------- Init ----------
-initLeagueSelect();
-updateRoundSelect();
-renderFixtures();
-renderStandings();
-renderPalmares();
-renderLdc();
-applySkin(currentSkin);
-skinSelect.value = currentSkin;
-
-leagueSelect.addEventListener("change", () => {
+function init() {
+  initLeagueSelect();
+  leagueSelect.value = "ligue1";
   updateRoundSelect();
+  roundSelect.value = "0";
+  applySkin(currentSkin || "ligue1");
+  skinSelect.value = currentSkin || "ligue1";
+
   renderFixtures();
   renderStandings();
-});
+  renderPalmares();
+  renderLdc();
+  updateTitles();
 
-roundSelect.addEventListener("change", () => {
-  renderFixtures();
-});
+  leagueSelect.addEventListener("change", () => {
+    updateRoundSelect();
+    roundSelect.value = "0";
+    renderFixtures();
+    renderStandings();
+  });
 
-skinSelect.addEventListener("change", () => {
-  applySkin(skinSelect.value);
-});
+  roundSelect.addEventListener("change", () => {
+    renderFixtures();
+  });
+
+  skinSelect.addEventListener("change", () => {
+    applySkin(skinSelect.value);
+  });
+}
+
+init();
 </script>
 
 </body>
